@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import confetti from "canvas-confetti"
 
 const TURNS = {
   X: 'X',
@@ -52,6 +53,16 @@ function App() {
     return null 
   }
 
+  const resetGame = () => {
+    setBoard(Array(9).fill(null))
+    setTurn(TURNS.X)
+    setWinner(null)
+  }
+
+  const checkEndGame = (newBoard) => {
+    return newBoard.every((square) => square !== null)
+  }
+
   const updateBoard = (index) => {
   //no se actualiza el estado de una casilla, si ya hay un valor de por medio
     if(board[index] || winner) return
@@ -66,13 +77,17 @@ function App() {
 //revisar si hay un ganador
   const newWinner = checkWinner(newBoard)
   if(newWinner){
+    confetti()
     setWinner(newWinner)
+  } else if (checkEndGame(newBoard)){
+    setWinner(false) //empate, termina el juego
   }
   }
 
   return (
     <main className="board">
       <h1>Tres en raya</h1>
+      <button onClick= {resetGame}>Reset del juego</button>
 
       <section className="game">
         {
@@ -99,6 +114,30 @@ function App() {
           {TURNS.O}
         </Square>
       </section>
+
+      {
+        winner !== null && (
+          <section className="winner">
+            <div className="text">
+              <h2>
+                {
+                  winner === false 
+                  ? 'Empate'
+                  : 'Gana: ' 
+                }
+              </h2>
+
+              <header className="win">
+                {winner && <Square>{winner}</Square>}
+              </header>
+
+              <footer>
+                <button onClick={resetGame}>Empezar de nuevo</button>
+              </footer>
+            </div>
+          </section>
+        )
+      }
     </main>
   )
 }
