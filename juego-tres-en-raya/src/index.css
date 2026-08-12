@@ -29,8 +29,8 @@ a:hover{
 
 body {
   margin: 0;
-  display: grid;
-  place-items: center;
+  display: flex;
+  justify-content: center;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -49,6 +49,7 @@ body {
 
 .board h1 {
   color: #eee;
+  margin-bottom: 16px;
 }
 
 .board button {
