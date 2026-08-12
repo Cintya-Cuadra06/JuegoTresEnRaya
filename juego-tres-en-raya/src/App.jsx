@@ -2,8 +2,8 @@ import { useState } from 'react'
 import confetti from "canvas-confetti"
 
 const TURNS = {
-  X: 'X',
-  O: 'O'
+  X: '❌',
+  O: '🔵'
 }
 //componente que representa una casilla del tablero
 // Recibe el contenido, el estado de seleccion, la funcion para actualizar
@@ -33,8 +33,15 @@ const WINNER_COMBOS = [
 ]
 
 function App() {
-  const [board, setBoard] = useState(Array(9).fill(null))
-  const [turn, setTurn] = useState(TURNS.X)
+  const [board, setBoard] = useState(() =>{
+   const boardFromStorage = window.localStorage.getItem('board')
+   return boardFromStorage ? JSON.parse(boardFromStorage) :  Array(9).fill(null)
+  })
+  const [turn, setTurn] = useState(() => {
+    const turnFromStorage = window.localStorage.getItem('turn')
+    return turnFromStorage  ?? TURNS.x
+    TURNS.X
+  })
   const [winner, setWinner] = useState(null) 
   const checkWinner = (boardToCheck) => {
 //revisa todas las combinaciones ganadoras para ver 
@@ -57,6 +64,9 @@ function App() {
     setBoard(Array(9).fill(null))
     setTurn(TURNS.X)
     setWinner(null)
+
+    window.localStorage.removeItem('board')
+    window.localStorage.removeItem('turn')
   }
 
   const checkEndGame = (newBoard) => {
@@ -73,6 +83,10 @@ function App() {
 //cambiar el turno
     const newTurn = turn === TURNS.X ? TURNS.O : TURNS.X 
     setTurn(newTurn)
+
+//guardar la partida 
+window.localStorage.setItem('board', JSON.stringify(newBoard))
+window.localStorage.setItem('turn', newTurn)
 
 //revisar si hay un ganador
   const newWinner = checkWinner(newBoard)
